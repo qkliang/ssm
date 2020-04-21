@@ -40,7 +40,9 @@ public class MapperTest {
         Department department = new Department();
 //        department.setDeptName("开发部");
 //        departmentMapper.insertSelective(department);
-        department.setDeptName("测试部");
-        departmentMapper.insertSelective(department);
+//        department.setDeptName("测试部");
+//        departmentMapper.insertSelective(department);
+        department = departmentMapper.selectByPrimaryKey(1);
+        System.out.println(department.toString());
     }
 }

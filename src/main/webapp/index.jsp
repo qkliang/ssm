@@ -16,10 +16,13 @@
 <script
         src="static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 <head>
-    <title>Title</title>
+    <title>欢迎页面</title>
+
 </head>
 
 <body>
+
+<h1> 欢迎登陆系统</h1>
 
 </body>
 </html>
