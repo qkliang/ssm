@@ -5,6 +5,21 @@ public class Department {
 
     private String deptName;
 
+    public Department(Integer deptId, String deptName) {
+        this.deptId = deptId;
+        this.deptName = deptName;
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "deptId=" + deptId +
+                ", deptName='" + deptName + '\'' +
+                '}';
+    }
+
+    public Department() {}
+
     public Integer getDeptId() {
         return deptId;
     }
