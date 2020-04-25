@@ -6,6 +6,7 @@ import com.lqk.bean.Employee;
 import com.lqk.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,12 +20,14 @@ public class EmployeeController {
     EmployeeService employeeService;
     @RequestMapping("/emps")
     public String getEmployees(@RequestParam(value = "pn",defaultValue = "1") Integer pn,
-    ModelAndView m){
+    Model m){
         PageHelper.startPage(pn,5);
         List<Employee> employees = employeeService.getAll();
-        System.out.println(employees.size());
+        System.out.println("employees----"+employees);
         PageInfo pageInfo = new PageInfo(employees, 5);
-        m.addObject("pageInfo",pageInfo);
+        m.addAttribute("pageInfo",pageInfo);
+        m.addAttribute("emps",employees);
+        m.addAttribute("hello","World");
         System.out.println(pageInfo);
         return "list";
     }

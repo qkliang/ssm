@@ -34,7 +34,7 @@ public class Employee {
                 ", gender='" + gender + '\'' +
                 ", email='" + email + '\'' +
                 ", dId=" + dId +
-                ", department=" + department.toString() +
+                ", department=" + department +
                 '}';
     }
 
