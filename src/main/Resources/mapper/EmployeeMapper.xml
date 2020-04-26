@@ -103,7 +103,7 @@
       distinct
     </if>
     <include refid="Base_Column_List_WithDept" />
-    from tbl_emp e,inner tbl_dept d on e.d_id = d.dept_id
+    from tbl_emp e inner join tbl_dept d on e.d_id = d.dept_id
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>

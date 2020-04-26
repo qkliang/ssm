@@ -23,12 +23,8 @@ public class EmployeeController {
     Model m){
         PageHelper.startPage(pn,5);
         List<Employee> employees = employeeService.getAll();
-        System.out.println("employees----"+employees);
         PageInfo pageInfo = new PageInfo(employees, 5);
         m.addAttribute("pageInfo",pageInfo);
-        m.addAttribute("emps",employees);
-        m.addAttribute("hello","World");
-        System.out.println(pageInfo);
         return "list";
     }
 }

@@ -48,13 +48,14 @@
                         <th>部门</th>
                         <th>操作</th>
                     </tr>
-                    <c:forEach items="${pageInfo.list}" var="emp">
+                    <c:forEach items="${pageInfo.list}"  var="emp">
+<%--                    <c:forEach items="${emps}"  var="emp">--%>
                         <tr>
                             <th>${emp.empId }</th>
                             <th>${emp.empName }</th>
-                            <th>${hello }</th>
+                            <th>${emp.gender == "F" ? '男' : '女'}</th>
                             <th>${emp.email }</th>
-                            <th>${hello }</th>
+                            <th>${emp.department.deptName}</th>
                             <th>
                                 <button class="btn btn-primary btn-sm">
                                     <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
