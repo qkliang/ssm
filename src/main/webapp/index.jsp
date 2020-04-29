@@ -21,6 +21,52 @@
 </head>
 
 <body>
+<!-- Modal -->
+<div class="modal fade" id="empAddModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">员工添加</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">empName</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> Remember me
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Sign in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <!-- 第一行 -->
@@ -32,7 +78,7 @@
 
     <div class="row">
         <div class="col-md-4 col-md-offset-8">
-            <button class="btn-success">新增</button>
+            <button class="btn-primary" id="emp_add_btn">新增</button>
             <button class="btn-danger">删除</button>
         </div>
     </div>
@@ -41,14 +87,14 @@
         <div class="col-md-12">
             <table class="table" id="table_emp">
                 <thead>
-                    <tr>
-                        <th>客户编号</th>
-                        <th>客户姓名</th>
-                        <th>性别</th>
-                        <th>邮箱</th>
-                        <th>部门</th>
-                        <th>操作</th>
-                    </tr>
+                <tr>
+                    <th>客户编号</th>
+                    <th>客户姓名</th>
+                    <th>性别</th>
+                    <th>邮箱</th>
+                    <th>部门</th>
+                    <th>操作</th>
+                </tr>
                 </thead>
                 <tbody>
                 </tbody>
@@ -61,15 +107,23 @@
     </div>
 </div>
 <script type="application/javascript">
+    $("#emp_add_btn").click(function () {
+        $("#empAddModel").modal({
+            backdrop: "static"
+        });
+    });
+
+
     $(function () {
         to_page(1);
     });
+
     function to_page(pn) {
         $.ajax({
-            url:"${APP_PATH}/emps",
-            data:"pn="+pn,
-            type:"GET",
-            success:function (result) {
+            url: "${APP_PATH}/emps",
+            data: "pn=" + pn,
+            type: "GET",
+            success: function (result) {
                 build_emps_tables(result);
                 build_page_info(result);
                 build_page_nav(result);
@@ -80,24 +134,24 @@
     function build_page_nav(result) {
         $("#page_nav_area").empty();
         var ul = $("<ul></ul>").addClass("pagination");
-        var liFirstPage =  $("<li></li>").append($("<a></a>").append("首页").attr("href","#"));
+        var liFirstPage = $("<li></li>").append($("<a></a>").append("首页").attr("href", "#"));
         var liPrePage = $("<li></li>").append($("<a></a>").append("&laquo;"));
 
-        if (result.extend.pageInfo.hasPreviousPage == false){
+        if (result.extend.pageInfo.hasPreviousPage == false) {
             liFirstPage.addClass("disabled");
             liPrePage.addClass("disabled");
-        }else{
+        } else {
             liFirstPage.click(function () {
                 to_page(1)
             });
             liPrePage.click(function () {
-                to_page(result.extend.pageInfo.pageNum -1)
+                to_page(result.extend.pageInfo.pageNum - 1)
             });
         }
         ul.append(liFirstPage).append(liPrePage);
-        $.each(result.extend.pageInfo.navigatepageNums,function (index, pageNum) {
+        $.each(result.extend.pageInfo.navigatepageNums, function (index, pageNum) {
             var liNumPage = $("<li></li>").append($("<a></a>").append(pageNum));
-            if(result.extend.pageInfo.pageNum == pageNum){
+            if (result.extend.pageInfo.pageNum == pageNum) {
                 liNumPage.addClass("active");
             }
             liNumPage.click(function () {
@@ -106,14 +160,14 @@
             ul.append(liNumPage);
         });
         var liNextPage = $("<li></li>").append($("<a></a>").append("&raquo;"));
-        var liLasttPage =  $("<li></li>").append($("<a></a>").append("尾页").attr("href","#"));
-        if (result.extend.pageInfo.hasNextPage == false){
+        var liLasttPage = $("<li></li>").append($("<a></a>").append("尾页").attr("href", "#"));
+        if (result.extend.pageInfo.hasNextPage == false) {
             liNextPage.addClass("disabled");
             liLasttPage.addClass("disabled");
-        }else{
+        } else {
 
             liNextPage.click(function () {
-                to_page(result.extend.pageInfo.pageNum+1);
+                to_page(result.extend.pageInfo.pageNum + 1);
             });
             liLasttPage.click(function () {
                 to_page(result.extend.pageInfo.pages);
@@ -124,16 +178,18 @@
         nav.appendTo("#page_nav_area");
 
     }
+
     function build_page_info(result) {
         $("#page_info_area").empty();
         $("#page_info_area").append("当前第 " + result.extend.pageInfo.pageNum + " 页," +
             " 总 " + result.extend.pageInfo.pages + " 页," +
             " 共 " + result.extend.pageInfo.total + " 记录")
     }
+
     function build_emps_tables(result) {
         $("#table_emp tbody").empty();
         var emps = result.extend.pageInfo.list;
-        $.each(emps,function (index, emp) {
+        $.each(emps, function (index, emp) {
             var tdEmpId = $("<td></td>").append(emp.empId);
             var tdEmpName = $("<td></td>").append(emp.empName);
             var tdGender = $("<td></td>").append(emp.gender == "F" ? '男' : '女');
@@ -145,11 +201,11 @@
                 .append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("删除");
             var tdBtn = $("<td></td>").append(btnMod).append(btnDel);
             $("<tr></tr>").append(tdEmpId)
-                          .append(tdEmpName)
-                          .append(tdGender)
-                          .append(tdEmail)
-                          .append(tdDepartName)
-                          .append(tdBtn)
+                .append(tdEmpName)
+                .append(tdGender)
+                .append(tdEmail)
+                .append(tdDepartName)
+                .append(tdBtn)
                 .appendTo("#table_emp tbody");
         });
 
