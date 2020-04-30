@@ -16,5 +16,8 @@ public class EmployeeService {
         return employeeMapper.selectByExampleWithDept(null);
     }
 
+    public void addEmp(Employee employee){
+        employeeMapper.insert(employee);
+    }
 
 }

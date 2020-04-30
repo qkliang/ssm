@@ -26,43 +26,50 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">员工添加</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">empName</label>
+                        <label for="empName_add_input" class="col-sm-2 control-label">姓名</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                            <input type="text" class="form-control" id="empName_add_input" name="empName" placeholder="empName">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                        <label for="emaill_add_input" class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                            <input type="text" class="form-control" id="emaill_add_input" name="email" placeholder="email@foxmail.com">
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox"> Remember me
-                                </label>
-                            </div>
+                        <label class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="genderF_add_input" value="F"> 男
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="genderM_add_input" value="M"> 女
+                            </label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-default">Sign in</button>
+                        <label class="col-sm-2 control-label">部门</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" name="dId" id="deptName_add_select">
+<%--                                <option>1</option>--%>
+<%--                                <option>2</option>--%>
+                            </select>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="emp_add_btn_save">保存</button>
             </div>
         </div>
     </div>
@@ -107,12 +114,36 @@
     </div>
 </div>
 <script type="application/javascript">
+    $("#emp_add_btn_save").click(function () {
+        $.ajax({
+            url:"${APP_PATH}/emp",
+            data:$("#empAddModal form").serialize(),
+            type:"POST",
+            success:function (result) {
+                alert("chenggong");
+            }
+        })
+    })
     $("#emp_add_btn").click(function () {
+        getDeptNames();
         $("#empAddModel").modal({
             backdrop: "static"
         });
     });
 
+    function getDeptNames(){
+        $.ajax({
+            url: "${APP_PATH}/depts",
+            type: "GET",
+            success:function (result) {
+                $.each(result.extend.depts,function() {
+                    var deptOpinion = $("<option></option>")
+                        .append(this.deptName).attr("value",this.deptId);
+                    deptOpinion.appendTo("#deptName_add_select");
+                })
+            }
+        })
+    }
 
     $(function () {
         to_page(1);
