@@ -22,6 +22,7 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
+    @ResponseBody
     @RequestMapping(value="/emp",method = RequestMethod.POST)
     public Message addEmp(Employee employee){
         employeeService.addEmp(employee);

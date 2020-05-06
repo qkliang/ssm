@@ -37,19 +37,21 @@
                         <label for="empName_add_input" class="col-sm-2 control-label">姓名</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="empName_add_input" name="empName" placeholder="empName">
+                            <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="emaill_add_input" class="col-sm-2 control-label">邮箱</label>
+                        <label for="email_add_input" class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="emaill_add_input" name="email" placeholder="email@foxmail.com">
+                            <input type="text" class="form-control" id="email_add_input" name="email" placeholder="email@foxmail.com">
+                            <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="gender" id="genderF_add_input" value="F"> 男
+                                <input type="radio" name="gender" id="genderF_add_input" value="F" checked="checked"> 男
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="gender" id="genderM_add_input" value="M"> 女
@@ -114,16 +116,51 @@
     </div>
 </div>
 <script type="application/javascript">
+
+    //校验用户名和邮箱的合法性
+    function validate_input_form(){
+        $("#empName_add_input").parent().removeClass("has-error");
+        $("#email_add_input").parent().removeClass("has-error");
+        var empName = $("#empName_add_input").val();
+        var empEmail = $("#email_add_input").val();
+        console.log(empName);
+        var regEmpName = /(^[a-zA-Z0-9_-]{4,16}$)|(^[\u2E80-\u9FFF]{2,6})/;
+
+        if(!regEmpName.test(empName)){
+            $("#empName_add_input").parent().addClass("has-error");
+            $("#empName_add_input").next("span").text("用户名不合法");
+            // alert("用户名不合法");
+            return false;
+        };
+        var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+        if(!regEmail.test(empEmail)){
+            $("#email_add_input").parent().addClass("has-error");
+            $("#email_add_input").next("span").text("邮箱不合法");
+            // alert("邮箱不合法");
+            return false;
+        };
+        return true;
+
+    }
     $("#emp_add_btn_save").click(function () {
+        var s = $("#empAddModel form").serialize();
+
+
+        if(!validate_input_form()){
+            return false;
+        }
+        console.log(s);
         $.ajax({
-            url:"${APP_PATH}/emp",
-            data:$("#empAddModal form").serialize(),
-            type:"POST",
+            url: "${APP_PATH}/emp",
+            type: "POST",
+            data: s,
             success:function (result) {
-                alert("chenggong");
+                $("#empAddModel").modal('hide');
+
+                console.log("success");
             }
-        })
-    })
+        });
+    });
     $("#emp_add_btn").click(function () {
         getDeptNames();
         $("#empAddModel").modal({
