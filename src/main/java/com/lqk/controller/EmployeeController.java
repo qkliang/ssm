@@ -8,10 +8,7 @@ import com.lqk.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -21,6 +18,46 @@ public class EmployeeController {
 
     @Autowired
     EmployeeService employeeService;
+    @RequestMapping("/hello")
+    public String hello(){
+        return "hello";
+    }
+
+    /**
+     * 通过ID保存
+     */
+    @ResponseBody
+    @RequestMapping(value = "/emp/{empId}",method = RequestMethod.PUT)
+    public Message updateEmpById(Employee employee){
+        System.out.println("11111111111111");
+        System.out.println(employee);
+        employeeService.updateEmpById(employee);
+        return Message.success();
+    }
+    /**
+     * 通过id查询emp
+     */
+    @ResponseBody
+    @RequestMapping(value = "/emp/{id}",method = RequestMethod.GET)
+    public Message getEmpById(@PathVariable("id") Integer id){
+        Employee employee = employeeService.getEmpById(id);
+        return Message.success().add("emp",employee);
+    }
+
+    /**
+     * 通过empName检查是否存在
+     * */
+    @ResponseBody
+    @RequestMapping(value = "/checkUser",method = RequestMethod.POST)
+    public Message checkExistUser(@RequestParam("empName") String empName){
+        //true代表不存在
+        boolean b = employeeService.checkUser(empName);
+        if(b){
+            return Message.success();
+        }else {
+            return Message.fail();
+        }
+    }
 
     @ResponseBody
     @RequestMapping(value="/emp",method = RequestMethod.POST)

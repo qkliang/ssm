@@ -21,7 +21,65 @@
 </head>
 
 <body>
-<!-- Modal -->
+<!-- Modal员工修改-->
+<div class="modal fade" id="empUpdateModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myEmpUpdateModel">员工修改</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="empName_add_input" class="col-sm-2 control-label">姓名</label>
+                        <div class="col-sm-10">
+<%--                            <input type="text" class="form-control" id="empName_update_input" name="empName" placeholder="empName">--%>
+                            <p class="form-control-static" id="empName_update_input"></p>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email_add_input" class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="email_update_input" name="email" placeholder="email@foxmail.com">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="genderF_update_input" value="M"> 男
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="genderM_update_input" value="F"> 女
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">部门</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" name="dId" id="deptName_update_select">
+                                <%--                                <option>1</option>--%>
+                                <%--                                <option>2</option>--%>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="emp_update_btn_save">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal员工新增 -->
 <div class="modal fade" id="empAddModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -51,10 +109,10 @@
                         <label class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="gender" id="genderF_add_input" value="F" checked="checked"> 男
+                                <input type="radio" name="gender" id="gender_M_add_input" value="M" checked="checked"> 男
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="gender" id="genderM_add_input" value="M"> 女
+                                <input type="radio" name="gender" id="gender_F_add_input" value="F"> 女
                             </label>
                         </div>
                     </div>
@@ -117,6 +175,65 @@
 </div>
 <script type="application/javascript">
 
+    // 点击编辑按钮，打开修改的modal框
+    $(document).on("click",".edit_btn",function () {
+        var empId = $(this).attr("edid_id");
+        getDeptNames("#deptName_update_select");
+        getEmpById(empId);
+        $("#emp_update_btn_save").attr("edit-id",empId);
+        $("#empUpdateModel").modal({
+            backdrop: "static"
+        });
+
+
+    });
+    function getEmpById(empId){
+        $.ajax({
+            url:"${APP_PATH}/emp/"+empId,
+            type:"GET",
+            success:function (result) {
+                console.log(result);
+                var emp = result.extend.emp;
+                $("#empName_update_input").text(emp.empName);
+                $("#email_update_input").val(emp.email);
+                $("#empUpdateModel input[name=gender]").val([emp.gender]);
+                //
+                //$("#empUpdateModel select").val([emp.dId]);
+                $("#deptName_update_select").val([emp.dId]);
+            }
+        });
+    }
+    //change事件，检验用户名是否可用
+    $("#empName_add_input").change(function () {
+        var empName = $("#empName_add_input").val();
+        $.ajax({
+            url:"${APP_PATH}/checkUser",
+            type:"POST",
+            data:"empName="+empName,
+            success:function (result) {
+                var ele = "#empName_add_input";
+                var status = result.codeStatus == "100" ? "success" : "error";
+                var msg = result.codeStatus == "100" ? "通过" : "用户名已存在";
+                console.log(result.codeStatus);
+                show_message(ele,status,msg);
+            }
+        });
+    });
+
+    //显示校验状态
+    function show_message(ele, status, msg) {
+        //去除上次状态
+        console.log(msg);
+        $(ele).parent().removeClass("has-success has-error");
+        $(ele).parent().next("span").text("");
+        if("success" == status){
+            $(ele).parent().addClass("has-success");
+            $(ele).next("span").text(msg);
+        }else if ("error" == status){
+            $(ele).parent().addClass("has-error");
+            $(ele).next("span").text(msg);
+        }
+    }
     //校验用户名和邮箱的合法性
     function validate_input_form(){
         $("#empName_add_input").parent().removeClass("has-error");
@@ -142,10 +259,30 @@
         return true;
 
     }
+    $("#emp_update_btn_save").click(function () {
+        var s = $("#empUpdateModel form").serialize();
+        console.log(s);
+        var empId = $(this).attr("edit-id");
+        console.log(empId);
+        <%--$.ajax({--%>
+        <%--    url:"${APP_PATH}/emp/"+empId,--%>
+        <%--    type:"POST",--%>
+        <%--    data:$("#empUpdateModel form").serialize()+"&_method=put",--%>
+        <%--    success:function (result) {--%>
+
+        <%--    }--%>
+        <%--});--%>
+        $.ajax({
+            url:"${APP_PATH}/emp/"+empId,
+            type:"PUT",
+            data:$("#empUpdateModel form").serialize(),
+            success:function (result) {
+
+            }
+        });
+    });
     $("#emp_add_btn_save").click(function () {
         var s = $("#empAddModel form").serialize();
-
-
         if(!validate_input_form()){
             return false;
         }
@@ -156,19 +293,18 @@
             data: s,
             success:function (result) {
                 $("#empAddModel").modal('hide');
-
                 console.log("success");
             }
         });
     });
     $("#emp_add_btn").click(function () {
-        getDeptNames();
+        getDeptNames("#deptName_add_select");
         $("#empAddModel").modal({
             backdrop: "static"
         });
     });
 
-    function getDeptNames(){
+    function getDeptNames(ele){
         $.ajax({
             url: "${APP_PATH}/depts",
             type: "GET",
@@ -176,7 +312,7 @@
                 $.each(result.extend.depts,function() {
                     var deptOpinion = $("<option></option>")
                         .append(this.deptName).attr("value",this.deptId);
-                    deptOpinion.appendTo("#deptName_add_select");
+                    deptOpinion.appendTo(ele);
                 })
             }
         })
@@ -260,11 +396,12 @@
         $.each(emps, function (index, emp) {
             var tdEmpId = $("<td></td>").append(emp.empId);
             var tdEmpName = $("<td></td>").append(emp.empName);
-            var tdGender = $("<td></td>").append(emp.gender == "F" ? '男' : '女');
+            var tdGender = $("<td></td>").append(emp.gender == "M" ? '男' : '女');
             var tdEmail = $("<td></td>").append(emp.email);
             var tdDepartName = $("<td></td>").append(emp.department.deptName);
             var btnMod = $("<button></button>").addClass("btn btn-primary btn-xs edit_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
+            btnMod.attr("edid_id",emp.empId);
             var btnDel = $("<button></button>").addClass("btn btn-danger btn-xs ")
                 .append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("删除");
             var tdBtn = $("<td></td>").append(btnMod).append(btnDel);
