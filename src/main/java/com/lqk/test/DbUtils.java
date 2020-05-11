@@ -18,7 +18,8 @@ public class DbUtils {
                 String string = rs.getString(2);
                 System.out.println(string);
             }
-            preparedStatement.getConnection().close();
+           preparedStatement.close();
+//            preparedStatement.getConnection().close();
             sql = "select * from tbl_dept";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs1 = ps.executeQuery();
@@ -26,6 +27,7 @@ public class DbUtils {
                 String string = rs1.getString(2);
                 System.out.println(string);
             }
+            ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,4 +1,4 @@
-package com.lqk.test;
+package com.lqk.tools;
 
 /**
  * js引用java变量，如果java变量中有回车等特殊字符，引入不成功，用此类进行特殊处理
