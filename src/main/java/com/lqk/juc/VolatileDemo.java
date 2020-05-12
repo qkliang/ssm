@@ -1,4 +1,8 @@
 package com.lqk.juc;
+
+/**
+ * 保证了内存可见性，不能保证原子性，原子性需要使用Atomic关键字
+ */
 public class VolatileDemo {
     public static void main(String[] args) {
         MyThread myThread = new MyThread();
