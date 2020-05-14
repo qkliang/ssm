@@ -146,7 +146,7 @@
     <div class="row">
         <div class="col-md-4 col-md-offset-8">
             <button class="btn-primary" id="emp_add_btn">新增</button>
-            <button class="btn-danger">删除</button>
+            <button class="btn-danger" id="emp_del_btn">删除</button>
         </div>
     </div>
 
@@ -174,7 +174,10 @@
     </div>
 </div>
 <script type="application/javascript">
-
+    var emp_del_btn = document.getElementById("emp_del_btn");
+    $(emp_del_btn).click(function () {
+        alert(1);
+    });
     // 点击编辑按钮，打开修改的modal框
     $(document).on("click",".edit_btn",function () {
         var empId = $(this).attr("edid_id");
@@ -402,8 +405,9 @@
             var btnMod = $("<button></button>").addClass("btn btn-primary btn-xs edit_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
             btnMod.attr("edid_id",emp.empId);
-            var btnDel = $("<button></button>").addClass("btn btn-danger btn-xs ")
+            var btnDel = $("<button></button>").addClass("btn btn-danger btn-xs del_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("删除");
+            btnDel.attr("del_id",emp.empId);
             var tdBtn = $("<td></td>").append(btnMod).append(btnDel);
             $("<tr></tr>").append(tdEmpId)
                 .append(tdEmpName)
