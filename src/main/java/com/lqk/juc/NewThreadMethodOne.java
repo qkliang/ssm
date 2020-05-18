@@ -1,17 +1,22 @@
 package com.lqk.juc;
 
 public class NewThreadMethodOne extends Thread{
-    private int tickets = 10;
+    private int tickets = 100;
     private String ThreadName;
     public NewThreadMethodOne(String ThreadName){
         this.ThreadName = ThreadName;
     }
     @Override
     public void run(){
-        for(int i=0;i< 100;i++){
-            if(tickets > 0){
-                System.out.println(this.ThreadName+"卖票" + tickets--);
+        while(true){
+            synchronized (this){
+                if(tickets > 0){
+                    System.out.println(ThreadName+"卖票 No." + tickets--);
+                }else {
+                    break;
+                }
             }
+
         }
     }
 
@@ -20,6 +25,7 @@ public class NewThreadMethodOne extends Thread{
         NewThreadMethodOne t2 = new NewThreadMethodOne("B窗口");
         t1.start();
         t2.start();
+
     }
 
 
